@@ -1,0 +1,23 @@
+# Virtual Environment & Python cache
+.venv/
+venv/
+__pycache__/
+*.py[cod]
+*$py.class
+.ipynb_checkpoints/
+
+# Environment variables & secrets
+.env
+.env.*
+
+# Data & database files (large / local datasets)
+data/
+*.csv
+*.xlsx
+*.db
+*.sqlite3
+
+# OS & editor files
+.DS_Store
+Thumbs.db
+.vscode/
