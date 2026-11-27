@@ -6,6 +6,7 @@ import joblib
 import sys
 import pandas as pd
 from pydantic import BaseModel
+import requests
 
 from app.preprocessing import bool_cols, transform_features
 
@@ -23,6 +24,23 @@ app.add_middleware(
 
 BASE_DIR = Path(__file__).resolve().parent
 MODEL_PATH = BASE_DIR / "model" / "accident_severity_pipeline.joblib"
+MODEL_URL = "https://github.com/AmiraTarek815/Depi-Final-Project/releases/download/v1.0/accident_severity_pipeline.joblib"
+
+
+def ensure_model_downloaded(dest_path: Path, url: str):
+  if dest_path.exists() and dest_path.stat().st_size > 0:
+    return
+  dest_path.parent.mkdir(parents=True, exist_ok=True)
+  response = requests.get(url, stream=True, timeout=180)
+  response.raise_for_status()
+  with open(dest_path, "wb") as f:
+    for chunk in response.iter_content(chunk_size=1024 * 1024):
+      if chunk:
+        f.write(chunk)
+
+
+ensure_model_downloaded(MODEL_PATH, MODEL_URL)
+
 pipeline = joblib.load(MODEL_PATH)
 
 app.mount("/static", StaticFiles(directory=BASE_DIR / "static"), name="static")
